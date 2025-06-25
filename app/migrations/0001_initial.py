@@ -15,11 +15,11 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     "id",
-                    models.BigAutoField(
-                        auto_created=True,
+                    models.CharField(
+                        max_length=155,
                         primary_key=True,
                         serialize=False,
-                        verbose_name="ID",
+                        editable=False,
                     ),
                 ),
                 ("created", models.DateTimeField(auto_now_add=True)),

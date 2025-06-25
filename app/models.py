@@ -16,6 +16,7 @@ class TimeStampedModel(models.Model):
 class Station(TimeStampedModel):
     """Represent a bike station returned by the JCDecaux API."""
 
+    id = models.CharField(max_length=155, primary_key=True, editable=False)
     number = models.PositiveIntegerField()
     contract_name = models.CharField(max_length=100)
     name = models.CharField(max_length=255)
@@ -36,6 +37,11 @@ class Station(TimeStampedModel):
         ordering = ["contract_name", "number"]
         indexes = [models.Index(fields=["contract_name", "number"])]
         unique_together = ("contract_name", "number")
+
+    def save(self, *args, **kwargs):
+        """Set the primary key based on contract and station number."""
+        self.id = f"{self.contract_name}-{self.number}"
+        super().save(*args, **kwargs)
 
     def __str__(self) -> str:  # pragma: no cover - trivial
         return f"{self.contract_name} {self.number} - {self.name}"
