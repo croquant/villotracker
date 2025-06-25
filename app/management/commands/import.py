@@ -30,8 +30,8 @@ class Command(BaseCommand):
             )
             stations = client.list_stations(contract.name)
 
-            for s in stations:
-                raw_last_update = s.lastUpdate
+            for station in stations:
+                raw_last_update = station.lastUpdate
                 if isinstance(raw_last_update, str):
                     try:
                         last_update = datetime.fromisoformat(
@@ -49,31 +49,31 @@ class Command(BaseCommand):
                     )
                 Station.objects.update_or_create(
                     contract=contract_obj,
-                    number=int(s.number),
+                    number=int(station.number),
                     defaults={
-                        "name": s.name,
-                        "address": s.address,
-                        "position_latitude": float(s.position.latitude),
-                        "position_longitude": float(s.position.longitude),
-                        "banking": bool(s.banking),
-                        "bonus": bool(s.bonus),
-                        "status": s.status,
+                        "name": station.name,
+                        "address": station.address or "",
+                        "position_latitude": float(station.position.latitude),
+                        "position_longitude": float(station.position.longitude),
+                        "banking": bool(station.banking),
+                        "bonus": bool(station.bonus),
+                        "status": station.status,
                         "last_update": last_update,
-                        "connected": bool(s.connected),
-                        "overflow": bool(s.overflow),
+                        "connected": bool(station.connected),
+                        "overflow": bool(station.overflow),
                         "total_capacity": (
-                            int(s.totalStands.capacity)
-                            if s.totalStands.capacity is not None
+                            int(station.totalStands.capacity)
+                            if station.totalStands.capacity is not None
                             else None
                         ),
                         "main_capacity": (
-                            int(s.mainStands.capacity)
-                            if s.mainStands.capacity is not None
+                            int(station.mainStands.capacity)
+                            if station.mainStands.capacity is not None
                             else None
                         ),
                         "overflow_capacity": (
-                            int(s.overflowStands.capacity)
-                            if getattr(s.overflowStands, "capacity", None) is not None
+                            int(station.overflowStands.capacity)
+                            if getattr(station.overflowStands, "capacity", None) is not None
                             else None
                         ),
                     },
