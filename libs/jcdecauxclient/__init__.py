@@ -1,7 +1,7 @@
-from .client import JCDecauxClient
 from .async_client import JCDecauxClientAsync
-from .models import Contract, Park, Position, Station, Stands
-from .constants import API_BASE
+from .client import JCDecauxClient
+from .constants import API_BASE_URL
+from .models import Contract, Park, Position, Stands, Station
 
 __all__ = [
     "JCDecauxClient",
@@ -11,5 +11,5 @@ __all__ = [
     "Position",
     "Station",
     "Stands",
-    "API_BASE",
+    "API_BASE_URL",
 ]

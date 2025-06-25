@@ -3,8 +3,8 @@ from typing import List, Optional
 
 import httpx
 
-from .models import Contract, Park, Position, Station, Stands
-from .constants import API_BASE
+from .constants import API_BASE_URL
+from .models import Contract, Park, Position, Stands, Station
 
 
 class JCDecauxClientAsync:
@@ -27,14 +27,14 @@ class JCDecauxClientAsync:
         await self.close()
 
     async def get_contracts(self) -> List[Contract]:
-        url = f"{API_BASE}/vls/v3/contracts"
+        url = f"{API_BASE_URL}/vls/v3/contracts"
         resp = await self.client.get(url)
         resp.raise_for_status()
         data = resp.json()
         return [Contract(**c) for c in data]
 
     async def get_station(self, station_number: int, contract_name: str) -> Station:
-        url = f"{API_BASE}/vls/v3/stations/{station_number}"
+        url = f"{API_BASE_URL}/vls/v3/stations/{station_number}"
         params = {"contract": contract_name}
         resp = await self.client.get(url, params=params)
         if resp.status_code == 404:
@@ -46,7 +46,7 @@ class JCDecauxClientAsync:
         return self._parse_station(s)
 
     async def list_stations(self, contract_name: Optional[str] = None) -> List[Station]:
-        url = f"{API_BASE}/vls/v3/stations"
+        url = f"{API_BASE_URL}/vls/v3/stations"
         params = {}
         if contract_name:
             params["contract"] = contract_name
@@ -56,7 +56,7 @@ class JCDecauxClientAsync:
         return [self._parse_station(s) for s in data]
 
     async def list_parks(self, contract_name: str) -> List[Park]:
-        url = f"{API_BASE}/parking/v1/contracts/{contract_name}/parks"
+        url = f"{API_BASE_URL}/parking/v1/contracts/{contract_name}/parks"
         resp = await self.client.get(url)
         if resp.status_code == 400:
             raise ValueError(
@@ -67,7 +67,7 @@ class JCDecauxClientAsync:
         return [self._parse_park(p) for p in data]
 
     async def get_park(self, contract_name: str, park_number: int) -> Park:
-        url = f"{API_BASE}/parking/v1/contracts/{contract_name}/parks/{park_number}"
+        url = f"{API_BASE_URL}/parking/v1/contracts/{contract_name}/parks/{park_number}"
         resp = await self.client.get(url)
         if resp.status_code == 404:
             raise ValueError(

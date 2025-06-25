@@ -1,3 +1,3 @@
 # Common constants for JCDecaux clients
 
-API_BASE = "https://api.jcdecaux.com"
+API_BASE_URL = "https://api.jcdecaux.com"
