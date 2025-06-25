@@ -49,22 +49,32 @@ class Command(BaseCommand):
                     )
                 Station.objects.update_or_create(
                     contract=contract_obj,
-                    number=s.number,
+                    number=int(s.number),
                     defaults={
                         "name": s.name,
                         "address": s.address,
-                        "position_latitude": s.position.latitude,
-                        "position_longitude": s.position.longitude,
-                        "banking": s.banking,
-                        "bonus": s.bonus,
+                        "position_latitude": float(s.position.latitude),
+                        "position_longitude": float(s.position.longitude),
+                        "banking": bool(s.banking),
+                        "bonus": bool(s.bonus),
                         "status": s.status,
                         "last_update": last_update,
-                        "connected": s.connected,
-                        "overflow": s.overflow,
-                        "total_capacity": s.totalStands.capacity,
-                        "main_capacity": s.mainStands.capacity,
+                        "connected": bool(s.connected),
+                        "overflow": bool(s.overflow),
+                        "total_capacity": (
+                            int(s.totalStands.capacity)
+                            if s.totalStands.capacity is not None
+                            else None
+                        ),
+                        "main_capacity": (
+                            int(s.mainStands.capacity)
+                            if s.mainStands.capacity is not None
+                            else None
+                        ),
                         "overflow_capacity": (
-                            s.overflowStands.capacity if s.overflowStands else None
+                            int(s.overflowStands.capacity)
+                            if getattr(s.overflowStands, "capacity", None) is not None
+                            else None
                         ),
                     },
                 )
