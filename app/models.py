@@ -13,12 +13,32 @@ class TimeStampedModel(models.Model):
         abstract = True
 
 
+class Contract(TimeStampedModel):
+    """A bike rental contract. The primary key is the contract name."""
+
+    name = models.CharField(max_length=100, primary_key=True)
+    commercial_name = models.CharField(max_length=255)
+    country_code = models.CharField(max_length=10)
+    cities = models.JSONField(default=list)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self) -> str:  # pragma: no cover - trivial
+        return self.name
+
+
 class Station(TimeStampedModel):
     """Represent a bike station returned by the JCDecaux API."""
 
     id = models.CharField(max_length=155, primary_key=True, editable=False)
     number = models.PositiveIntegerField()
-    contract_name = models.CharField(max_length=100)
+    contract = models.ForeignKey(
+        Contract,
+        on_delete=models.CASCADE,
+        related_name="stations",
+        null=True,
+    )
     name = models.CharField(max_length=255)
     address = models.CharField(max_length=255, blank=True)
     position_latitude = models.FloatField()
@@ -34,15 +54,15 @@ class Station(TimeStampedModel):
     overflow_capacity = models.PositiveIntegerField(null=True, blank=True)
 
     class Meta:
-        ordering = ["contract_name", "number"]
-        indexes = [models.Index(fields=["contract_name", "number"])]
-        unique_together = ("contract_name", "number")
+        ordering = ["contract", "number"]
+        indexes = [models.Index(fields=["contract", "number"])]
+        unique_together = ("contract", "number")
 
     def save(self, *args, **kwargs):
         """Set the primary key based on contract and station number."""
-        self.id = f"{self.contract_name}-{self.number}"
+        self.id = f"{self.contract_id}-{self.number}"
         super().save(*args, **kwargs)
 
     def __str__(self) -> str:  # pragma: no cover - trivial
-        return f"{self.contract_name} {self.number} - {self.name}"
+        return f"{self.contract_id} {self.number} - {self.name}"
 
