@@ -1,13 +1,13 @@
 import os
 from typing import List, Optional
 
-import requests
+import httpx
 
 from .models import Contract, Park, Position, Station, Stands
 from .constants import API_BASE
 
 
-class JCDecauxClient:
+class JCDecauxClientAsync:
     def __init__(self, api_key: Optional[str] = None):
         api_key = api_key or os.environ.get("API_KEY")
         if not api_key:
@@ -15,20 +15,28 @@ class JCDecauxClient:
                 "API key must be provided either via argument or API_KEY env var"
             )
         self.api_key = api_key
-        self.session = requests.Session()
-        self.session.params = {"apiKey": api_key}
+        self.client = httpx.AsyncClient(params={"apiKey": api_key})
 
-    def get_contracts(self) -> List[Contract]:
+    async def close(self) -> None:
+        await self.client.aclose()
+
+    async def __aenter__(self) -> "JCDecauxClientAsync":
+        return self
+
+    async def __aexit__(self, exc_type, exc, tb) -> None:
+        await self.close()
+
+    async def get_contracts(self) -> List[Contract]:
         url = f"{API_BASE}/vls/v3/contracts"
-        resp = self.session.get(url)
+        resp = await self.client.get(url)
         resp.raise_for_status()
         data = resp.json()
         return [Contract(**c) for c in data]
 
-    def get_station(self, station_number: int, contract_name: str) -> Station:
+    async def get_station(self, station_number: int, contract_name: str) -> Station:
         url = f"{API_BASE}/vls/v3/stations/{station_number}"
         params = {"contract": contract_name}
-        resp = self.session.get(url, params=params)
+        resp = await self.client.get(url, params=params)
         if resp.status_code == 404:
             raise ValueError(
                 f"Station {station_number} not found in contract {contract_name}"
@@ -37,19 +45,19 @@ class JCDecauxClient:
         s = resp.json()
         return self._parse_station(s)
 
-    def list_stations(self, contract_name: Optional[str] = None) -> List[Station]:
+    async def list_stations(self, contract_name: Optional[str] = None) -> List[Station]:
         url = f"{API_BASE}/vls/v3/stations"
         params = {}
         if contract_name:
             params["contract"] = contract_name
-        resp = self.session.get(url, params=params)
+        resp = await self.client.get(url, params=params)
         resp.raise_for_status()
         data = resp.json()
         return [self._parse_station(s) for s in data]
 
-    def list_parks(self, contract_name: str) -> List[Park]:
+    async def list_parks(self, contract_name: str) -> List[Park]:
         url = f"{API_BASE}/parking/v1/contracts/{contract_name}/parks"
-        resp = self.session.get(url)
+        resp = await self.client.get(url)
         if resp.status_code == 400:
             raise ValueError(
                 f"Contract {contract_name} not found or does not support parks API"
@@ -58,9 +66,9 @@ class JCDecauxClient:
         data = resp.json()
         return [self._parse_park(p) for p in data]
 
-    def get_park(self, contract_name: str, park_number: int) -> Park:
+    async def get_park(self, contract_name: str, park_number: int) -> Park:
         url = f"{API_BASE}/parking/v1/contracts/{contract_name}/parks/{park_number}"
-        resp = self.session.get(url)
+        resp = await self.client.get(url)
         if resp.status_code == 404:
             raise ValueError(
                 f"Park {park_number} not found in contract {contract_name}"
