@@ -20,9 +20,9 @@ class Command(BaseCommand):
             contract_obj, _ = Contract.objects.update_or_create(
                 name=contract.name,
                 defaults={
-                    "commercial_name": contract.commercial_name,
-                    "country_code": contract.country_code,
-                    "cities": contract.cities,
+                    "commercial_name": contract.commercial_name or "",
+                    "country_code": contract.country_code or "",
+                    "cities": contract.cities or [],
                 },
             )
             self.stdout.write(
