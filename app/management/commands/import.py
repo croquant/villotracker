@@ -31,9 +31,22 @@ class Command(BaseCommand):
             stations = client.list_stations(contract.name)
 
             for s in stations:
-                last_update = datetime.fromtimestamp(
-                    int(s.lastUpdate) / 1000, tz=timezone.utc
-                )
+                raw_last_update = s.lastUpdate
+                if isinstance(raw_last_update, str):
+                    try:
+                        last_update = datetime.fromisoformat(
+                            raw_last_update.replace("Z", "+00:00")
+                        )
+                    except ValueError:
+                        last_update = datetime.fromtimestamp(
+                            int(raw_last_update) / 1000,
+                            tz=timezone.utc,
+                        )
+                else:
+                    last_update = datetime.fromtimestamp(
+                        raw_last_update / 1000,
+                        tz=timezone.utc,
+                    )
                 Station.objects.update_or_create(
                     contract=contract_obj,
                     number=s.number,
