@@ -48,3 +48,12 @@ Running the Django development server after setting `API_KEY` allows the applica
 export API_KEY="<your api key>"
 python manage.py runserver
 ```
+
+## Linting with Ruff
+
+Ruff is configured via `pyproject.toml`. After installing it, run:
+
+```bash
+pip install ruff
+ruff check app tests libs config
+```

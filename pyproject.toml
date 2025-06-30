@@ -1,0 +1,8 @@
+[tool.ruff]
+line-length = 79
+src = ["app", "config", "libs", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F"]
+ignore = []
+
