@@ -3,7 +3,11 @@ from unittest.mock import AsyncMock, patch
 import responses
 import httpx
 
-from libs.jcdecauxclient import JCDecauxClient, JCDecauxClientAsync, API_BASE_URL
+from libs.jcdecauxclient import (
+    JCDecauxClient,
+    JCDecauxClientAsync,
+    API_BASE_URL,
+)
 
 
 class JCDecauxClientTests(TestCase):
@@ -11,7 +15,12 @@ class JCDecauxClientTests(TestCase):
     def test_get_contracts(self):
         url = f"{API_BASE_URL}/vls/v3/contracts"
         data = [
-            {"name": "test", "commercial_name": "Test", "country_code": "TC", "cities": ["City1"]}
+            {
+                "name": "test",
+                "commercial_name": "Test",
+                "country_code": "TC",
+                "cities": ["City1"],
+            }
         ]
         responses.add(responses.GET, url, json=data, status=200)
 
@@ -82,9 +91,16 @@ class JCDecauxAsyncClientTests(TestCase):
     async def test_get_contracts(self):
         url = f"{API_BASE_URL}/vls/v3/contracts"
         data = [
-            {"name": "test", "commercial_name": "Test", "country_code": "TC", "cities": ["City1"]}
+            {
+                "name": "test",
+                "commercial_name": "Test",
+                "country_code": "TC",
+                "cities": ["City1"],
+            }
         ]
-        response = httpx.Response(200, json=data, request=httpx.Request("GET", url))
+        response = httpx.Response(
+            200, json=data, request=httpx.Request("GET", url)
+        )
         with patch(
             "libs.jcdecauxclient.async_client.httpx.AsyncClient.get",
             new=AsyncMock(return_value=response),

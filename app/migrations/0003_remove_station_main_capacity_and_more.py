@@ -102,9 +102,18 @@ class Migration(migrations.Migration):
                 ("stands", models.PositiveIntegerField()),
                 ("mechanical_bikes", models.PositiveIntegerField()),
                 ("electrical_bikes", models.PositiveIntegerField()),
-                ("electrical_internal_battery_bikes", models.PositiveIntegerField()),
-                ("electrical_removable_battery_bikes", models.PositiveIntegerField()),
-                ("capacity", models.PositiveIntegerField(blank=True, null=True)),
+                (
+                    "electrical_internal_battery_bikes",
+                    models.PositiveIntegerField(),
+                ),
+                (
+                    "electrical_removable_battery_bikes",
+                    models.PositiveIntegerField(),
+                ),
+                (
+                    "capacity",
+                    models.PositiveIntegerField(blank=True, null=True),
+                ),
                 (
                     "station",
                     models.ForeignKey(
@@ -117,7 +126,8 @@ class Migration(migrations.Migration):
             options={
                 "indexes": [
                     models.Index(
-                        fields=["station", "kind"], name="app_stand_station_906384_idx"
+                        fields=["station", "kind"],
+                        name="app_stand_station_906384_idx",
                     )
                 ],
                 "unique_together": {("station", "kind")},

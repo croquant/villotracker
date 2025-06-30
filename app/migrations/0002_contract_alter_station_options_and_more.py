@@ -18,7 +18,11 @@ class Migration(migrations.Migration):
                 ("updated", models.DateTimeField(auto_now=True)),
                 (
                     "name",
-                    models.CharField(max_length=100, primary_key=True, serialize=False),
+                    models.CharField(
+                        max_length=100,
+                        primary_key=True,
+                        serialize=False,
+                    ),
                 ),
                 ("commercial_name", models.CharField(max_length=255)),
                 ("country_code", models.CharField(max_length=10)),
@@ -57,7 +61,8 @@ class Migration(migrations.Migration):
         migrations.AddIndex(
             model_name="station",
             index=models.Index(
-                fields=["contract", "number"], name="app_station_contrac_53cd1b_idx"
+                fields=["contract", "number"],
+                name="app_station_contrac_53cd1b_idx",
             ),
         ),
         migrations.RemoveField(

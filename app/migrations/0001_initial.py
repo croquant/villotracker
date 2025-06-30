@@ -36,8 +36,14 @@ class Migration(migrations.Migration):
                 ("last_update", models.DateTimeField()),
                 ("connected", models.BooleanField(default=True)),
                 ("overflow", models.BooleanField(default=False)),
-                ("total_capacity", models.PositiveIntegerField(blank=True, null=True)),
-                ("main_capacity", models.PositiveIntegerField(blank=True, null=True)),
+                (
+                    "total_capacity",
+                    models.PositiveIntegerField(blank=True, null=True),
+                ),
+                (
+                    "main_capacity",
+                    models.PositiveIntegerField(blank=True, null=True),
+                ),
                 (
                     "overflow_capacity",
                     models.PositiveIntegerField(blank=True, null=True),

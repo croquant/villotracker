@@ -15,7 +15,8 @@ class JCDecauxClient:
         api_key = api_key or os.environ.get("API_KEY")
         if not api_key:
             raise ValueError(
-                "API key must be provided either via argument or API_KEY env var"
+                "API key must be provided either via argument "
+                "or API_KEY env var"
             )
         self.api_key = api_key
         self.session = requests.Session()
@@ -34,13 +35,16 @@ class JCDecauxClient:
         resp = self.session.get(url, params=params)
         if resp.status_code == 404:
             raise ValueError(
-                f"Station {station_number} not found in contract {contract_name}"
+                f"Station {station_number} not found in contract "
+                f"{contract_name}"
             )
         resp.raise_for_status()
         s = resp.json()
         return self._parse_station(s)
 
-    def list_stations(self, contract_name: Optional[str] = None) -> List[Station]:
+    def list_stations(
+        self, contract_name: Optional[str] = None
+    ) -> List[Station]:
         url = f"{API_BASE_URL}/vls/v3/stations"
         params = {}
         if contract_name:
@@ -55,14 +59,19 @@ class JCDecauxClient:
         resp = self.session.get(url)
         if resp.status_code == 400:
             raise ValueError(
-                f"Contract {contract_name} not found or does not support parks API"
+                f"Contract {contract_name} not found or does not support "
+                "parks API"
             )
         resp.raise_for_status()
         data = resp.json()
         return [self._parse_park(p) for p in data]
 
-    def get_park(self, contract_name: str, park_number: int) -> Park:
-        url = f"{API_BASE_URL}/parking/v1/contracts/{contract_name}/parks/{park_number}"
+    def get_park(
+        self, contract_name: str, park_number: int
+    ) -> Park:
+        url = (
+            f"{API_BASE_URL}/parking/v1/contracts/{contract_name}/parks/{park_number}"
+        )
         resp = self.session.get(url)
         if resp.status_code == 404:
             raise ValueError(
