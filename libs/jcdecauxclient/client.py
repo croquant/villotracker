@@ -2,11 +2,14 @@
 
 import os
 from typing import List, Optional
+from dotenv import load_dotenv
 
 import requests
 
 from .constants import API_BASE_URL
 from .models import Contract, Park, Position, Stands, Station
+
+load_dotenv()
 
 
 class JCDecauxClient:
