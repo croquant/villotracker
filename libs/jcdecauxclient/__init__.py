@@ -1,3 +1,5 @@
+"""Public interface for JCDecaux API clients and data models."""
+
 from .async_client import JCDecauxClientAsync
 from .client import JCDecauxClient
 from .constants import API_BASE_URL

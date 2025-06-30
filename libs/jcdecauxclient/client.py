@@ -1,3 +1,5 @@
+"""Synchronous client for interacting with the JCDecaux API."""
+
 import os
 from typing import List, Optional
 
@@ -8,6 +10,7 @@ from .models import Contract, Park, Position, Stands, Station
 
 
 class JCDecauxClient:
+    """Convenience wrapper around the JCDecaux REST API using requests."""
     def __init__(self, api_key: Optional[str] = None):
         api_key = api_key or os.environ.get("API_KEY")
         if not api_key:
