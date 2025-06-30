@@ -1,3 +1,5 @@
+"""Data models used by the JCDecaux API clients."""
+
 from dataclasses import dataclass, field
 from typing import List, Optional
 
